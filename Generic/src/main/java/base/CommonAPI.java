@@ -46,7 +46,7 @@ public class CommonAPI {
     //screenshot
     public static void captureScreenshot(WebDriver driver, String screenshotName) {
 
-        DateFormat df = new SimpleDateFormat("(MM.dd.yyyy-HH:mma)");
+        DateFormat df = new SimpleDateFormat("(MM.dd.yyyy-HH:mma:ss)");
         Date date = new Date();
         df.format(date);
 
@@ -61,10 +61,10 @@ public class CommonAPI {
 
     }
 
-    @Parameters({"platform", "url", "browserName", "cloudEnvName", "browserVersion", "cloudEnvName"})
+    @Parameters({"platform", "url", "browserName", "useCloudEnv", "browserVersion", "cloudEnvName"})
     @BeforeMethod
-    public static WebDriver setupDriver(String platform, String url, @Optional("chrome") String browserName, @Optional("false") boolean cloudEnvName, String browserVersion, String envName) throws MalformedURLException {
-        if (cloudEnvName) {
+    public static WebDriver setupDriver(String platform, String url, @Optional("chrome") String browserName, @Optional("false") boolean useCloudEnv, String browserVersion, String envName) throws MalformedURLException {
+        if (useCloudEnv) {
             driver = getCloudDriver(browserName, browserVersion, platform, envName);
         } else {
             driver = getLocalDriver(browserName, platform);
@@ -103,7 +103,7 @@ public class CommonAPI {
      */
     public static WebDriver getLocalDriver(String browserName, String platform) {
         if (platform.equalsIgnoreCase("mac") && browserName.equalsIgnoreCase("chrome")) {
-            System.setProperty("webdriver.chrome.driver", "../Generic/src/main/resources/drivers/chromedriver");
+            System.setProperty("webdriver.chrome.driver", "../Generic/src/main/resources/drivers/chromedriver1");
         } else if (platform.equalsIgnoreCase("windows") && browserName.equalsIgnoreCase("chrome")) {
             System.setProperty("webdriver.chrome.driver", "../Generic/src/main/resources/drivers/chromedriver.exe");
         }
@@ -121,12 +121,13 @@ public class CommonAPI {
      * @Author - peoplenTech
      */
     public static void getScreenshot(WebDriver driver) {
-        DateFormat df = new SimpleDateFormat("(MM.dd.yyyy-HH:mma)");
+        DateFormat df = new SimpleDateFormat("(MM.dd.yyyy-HH:mma:ss)");
         Date date = new Date();
         String name = df.format(date);
         File file = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         try {
             FileUtils.copyFile(file, new File("src/screenshots/" + name + ".png"));
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -282,18 +283,18 @@ public class CommonAPI {
      * @param Seconds The seconds that the thread must wait
      * @Author - peoplenTech
      */
-    public void sleepFor(int Seconds) {
+    public static void sleepFor(int Seconds) {
         try {
             Thread.sleep(Seconds * 1000);
         } catch (Exception e) {
         }
     }
 
-    public void clickOnCss(String locator) {
+    public static void clickOnCss(String locator) {
         driver.findElement(By.cssSelector(locator)).click();
     }
 
-    public void clickOnElement(String locator) {
+    public static void clickOnElement(String locator) {
         try {
             driver.findElement(By.cssSelector(locator)).click();
         } catch (Exception ex1) {
@@ -305,7 +306,7 @@ public class CommonAPI {
         }
     }
 
-    public void typeOnInputField(String locator, String value) {
+    public static void typeOnInputField(String locator, String value) {
         try {
             driver.findElement(By.cssSelector(locator)).sendKeys(value);
         } catch (Exception ex) {
@@ -314,71 +315,71 @@ public class CommonAPI {
 
     }
 
-    public void clickByXpath(String locator) {
+    public static void clickByXpath(String locator) {
         driver.findElement(By.xpath(locator)).click();
     }
 
-    public void typeByCss(String locator, String value) {
+    public static void typeByCss(String locator, String value) {
         driver.findElement(By.cssSelector(locator)).sendKeys(value);
     }
 
-    public void typeByCssNEnter(String locator, String value) {
+    public static void typeByCssNEnter(String locator, String value) {
         driver.findElement(By.cssSelector(locator)).sendKeys(value, Keys.ENTER);
     }
 
-    public void typeByXpath(String locator, String value) {
+    public static void typeByXpath(String locator, String value) {
         driver.findElement(By.xpath(locator)).sendKeys(value);
     }
 
-    public void takeEnterKeys(String locator) {
+    public static void takeEnterKeys(String locator) {
         driver.findElement(By.cssSelector(locator)).sendKeys(Keys.ENTER);
     }
 
-    public void clearInputField(String locator) {
+    public static void clearInputField(String locator) {
         driver.findElement(By.cssSelector(locator)).clear();
     }
 
-    public List<WebElement> getListOfWebElementsById(String locator) {
+    public static List<WebElement> getListOfWebElementsById(String locator) {
         List<WebElement> list = new ArrayList<WebElement>();
         list = driver.findElements(By.id(locator));
         return list;
     }
 
-    public List<WebElement> getListOfWebElementsByXpath(String locator) {
+    public static List<WebElement> getListOfWebElementsByXpath(String locator) {
         List<WebElement> list = new ArrayList<WebElement>();
         list = driver.findElements(By.xpath(locator));
         return list;
     }
 
-    public String getCurrentPageUrl() {
+    public static String getCurrentPageUrl() {
         String url = driver.getCurrentUrl();
         return url;
     }
 
-    public void navigateForward() {
+    public static void navigateForward() {
         driver.navigate().forward();
     }
 
-    public String getTextByCss(String locator) {
+    public static String getTextByCss(String locator) {
         String st = driver.findElement(By.cssSelector(locator)).getText();
         return st;
     }
 
-    public String getTextByXpath(String locator) {
+    public static String getTextByXpath(String locator) {
         String st = driver.findElement(By.xpath(locator)).getText();
         return st;
     }
 
-    public String getTextById(String locator) {
+    public static String getTextById(String locator) {
         return driver.findElement(By.id(locator)).getText();
     }
 
-    public String getTextByName(String locator) {
+    public static String getTextByName(String locator) {
         String st = driver.findElement(By.name(locator)).getText();
         return st;
     }
 
-    public List<String> getListOfString(List<WebElement> list) {
+    public static List<String> getListOfString(List<WebElement> list) {
         List<String> items = new ArrayList<String>();
         for (WebElement element : list) {
             items.add(element.getText());
@@ -386,12 +387,12 @@ public class CommonAPI {
         return items;
     }
 
-    public void selectOptionByVisibleText(WebElement element, String value) {
+    public static void selectOptionByVisibleText(WebElement element, String value) {
         Select select = new Select(element);
         select.selectByVisibleText(value);
     }
 
-    public void mouseHoverByCSS(String locator) {
+    public static void mouseHoverByCSS(String locator) {
         try {
             WebElement element = driver.findElement(By.cssSelector(locator));
             Actions action = new Actions(driver);
@@ -406,7 +407,7 @@ public class CommonAPI {
 
     }
 
-    public void mouseHoverByXpath(String locator) {
+    public static void mouseHoverByXpath(String locator) {
         try {
             WebElement element = driver.findElement(By.xpath(locator));
             Actions action = new Actions(driver);
@@ -422,77 +423,77 @@ public class CommonAPI {
     }
 
     //handling Alert
-    public void okAlert() {
+    public static void okAlert() {
         Alert alert = driver.switchTo().alert();
         alert.accept();
     }
 
-    public void cancelAlert() {
+    public static void cancelAlert() {
         Alert alert = driver.switchTo().alert();
         alert.dismiss();
     }
 
     //iFrame Handle
-    public void iframeHandle(WebElement element) {
+    public static void iframeHandle(WebElement element) {
         driver.switchTo().frame(element);
     }
 
-    public void goBackToHomeWindow() {
+    public static void goBackToHomeWindow() {
         driver.switchTo().defaultContent();
     }
 
     //get Links
-    public void getLinks(String locator) {
+    public static void getLinks(String locator) {
         driver.findElement(By.linkText(locator)).findElement(By.tagName("a")).getText();
     }
 
     //Taking Screen shots
-    public void takeScreenShot() throws IOException {
+    public static void takeScreenShot() throws IOException {
         File file = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         //FileUtils.copyFile(file, new File("screenShots.png"));
     }
 
     //Synchronization
-    public void waitUntilClickAble(By locator) {
+    public static void waitUntilClickAble(By locator) {
         WebDriverWait wait = new WebDriverWait(driver, 10);
         WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
     }
 
-    public void waitUntilVisible(By locator) {
+    public static void waitUntilVisible(By locator) {
         WebDriverWait wait = new WebDriverWait(driver, 10);
         WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
-    public void waitUntilSelectable(By locator) {
+    public static void waitUntilSelectable(By locator) {
         WebDriverWait wait = new WebDriverWait(driver, 10);
         boolean element = wait.until(ExpectedConditions.elementToBeSelected(locator));
     }
 
-    public void upLoadFile(String locator, String path) {
+    public static void upLoadFile(String locator, String path) {
         driver.findElement(By.cssSelector(locator)).sendKeys(path);
         /* path example to upload a file/image
            path= "C:\\Users\\rrt\\Pictures\\ds1.png";
          */
     }
 
-    public void clearInput(String locator) {
+    public static void clearInput(String locator) {
         driver.findElement(By.cssSelector(locator)).clear();
     }
 
-    public void keysInput(String locator) {
+    public static void keysInput(String locator) {
         driver.findElement(By.cssSelector(locator)).sendKeys(Keys.ENTER);
     }
 
     //type
-    public void typeOnCss(String locator, String value) {
+    public static void typeOnCss(String locator, String value) {
         driver.findElement(By.cssSelector(locator)).sendKeys(value);
     }
 
-    public void typeOnID(String locator, String value) {
+    public static void typeOnID(String locator, String value) {
         driver.findElement(By.id(locator)).sendKeys(value);
     }
 
-    public void typeOnElement(String locator, String value) {
+    public static void typeOnElement(String locator, String value) {
         try {
             driver.findElement(By.cssSelector(locator)).sendKeys(value);
         } catch (Exception ex1) {
@@ -511,15 +512,15 @@ public class CommonAPI {
         }
     }
 
-    public void clearField(String locator) {
+    public static void clearField(String locator) {
         driver.findElement(By.id(locator)).clear();
     }
 
-    public void navigateBack() {
+    public static void navigateBack() {
         driver.navigate().back();
     }
 
-    public void typeOnInputBox(String locator, String value) {
+    public static void typeOnInputBox(String locator, String value) {
         try {
             driver.findElement(By.id(locator)).sendKeys(value, Keys.ENTER);
         } catch (Exception ex1) {
